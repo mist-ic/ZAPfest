@@ -1,0 +1,56 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: zapfest-backend
+  
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/zapfest}
+  
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+  
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=5m
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:myverysecurejwtsecretkeythatisatleast256bitslong123456}
+    access-expiration-ms: 900000
+    refresh-expiration-ms: 604800000
+  
+  upload:
+    dir: ${UPLOAD_DIR:./uploads}
+  
+  razorpay:
+    key-id: ${RAZORPAY_KEY_ID:rzp_test_dummy}
+    key-secret: ${RAZORPAY_KEY_SECRET:dummy_secret}
+
+  rate-limit:
+    requests-per-minute: 100
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
