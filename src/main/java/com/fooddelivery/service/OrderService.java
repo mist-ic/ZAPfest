@@ -2,6 +2,8 @@ package com.fooddelivery.service;
 
 import com.fooddelivery.dto.request.OrderRequest;
 import com.fooddelivery.dto.response.PagedResponse;
+import com.fooddelivery.event.NotificationEvent;
+import com.fooddelivery.event.OrderEvent;
 import com.fooddelivery.exception.BadRequestException;
 import com.fooddelivery.exception.ResourceNotFoundException;
 import com.fooddelivery.exception.UnauthorizedException;
@@ -31,7 +33,7 @@ public class OrderService {
     private final MenuItemRepository menuItemRepository;
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
-    private final EmailService emailService;
+    private final EventPublisher eventPublisher;
 
     public Order create(OrderRequest request, String customerId) {
         if (!restaurantRepository.existsById(request.getRestaurantId())) {
@@ -71,9 +73,18 @@ public class OrderService {
 
         order = orderRepository.save(order);
 
+        publishOrderEvent(order, "CREATED");
+        
         User customer = userRepository.findById(customerId).orElse(null);
-        if (customer != null && customer.getEmail() != null) {
-            emailService.sendOrderConfirmation(customer.getEmail(), order);
+        if (customer != null) {
+            eventPublisher.publishNotification(NotificationEvent.builder()
+                    .userId(customerId)
+                    .email(customer.getEmail())
+                    .type("ORDER_PLACED")
+                    .title("Order Placed - #" + order.getId())
+                    .message("Your order has been placed! Total: ₹" + order.getTotalAmount())
+                    .timestamp(System.currentTimeMillis())
+                    .build());
         }
 
         return order;
@@ -122,9 +133,18 @@ public class OrderService {
         order.setStatus(status);
         order = orderRepository.save(order);
 
+        publishOrderEvent(order, status.name());
+
         User customer = userRepository.findById(order.getCustomerId()).orElse(null);
-        if (customer != null && customer.getEmail() != null) {
-            emailService.sendStatusUpdate(customer.getEmail(), order);
+        if (customer != null) {
+            eventPublisher.publishNotification(NotificationEvent.builder()
+                    .userId(order.getCustomerId())
+                    .email(customer.getEmail())
+                    .type("ORDER_" + status.name())
+                    .title("Order Update - #" + order.getId())
+                    .message("Your order status: " + status.name())
+                    .timestamp(System.currentTimeMillis())
+                    .build());
         }
 
         return order;
@@ -151,7 +171,9 @@ public class OrderService {
         }
 
         order.setStatus(OrderStatus.CANCELLED);
-        return orderRepository.save(order);
+        order = orderRepository.save(order);
+        publishOrderEvent(order, "CANCELLED");
+        return order;
     }
 
     public void updatePaymentStatus(String orderId, PaymentStatus status, String razorpayPaymentId) {
@@ -161,6 +183,21 @@ public class OrderService {
         if (razorpayPaymentId != null) order.setRazorpayPaymentId(razorpayPaymentId);
         if (status == PaymentStatus.PAID) order.setStatus(OrderStatus.CONFIRMED);
         orderRepository.save(order);
+        
+        if (status == PaymentStatus.PAID) {
+            publishOrderEvent(order, "CONFIRMED");
+        }
+    }
+
+    private void publishOrderEvent(Order order, String type) {
+        eventPublisher.publishOrderEvent(OrderEvent.builder()
+                .orderId(order.getId())
+                .customerId(order.getCustomerId())
+                .restaurantId(order.getRestaurantId())
+                .type(type)
+                .totalAmount(order.getTotalAmount())
+                .timestamp(System.currentTimeMillis())
+                .build());
     }
 
     private void checkAccess(Order order, String userId) {
