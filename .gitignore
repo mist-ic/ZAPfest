@@ -11,3 +11,6 @@ target/
 .DS_Store
 uploads/
 *.env
+frontend/node_modules/
+frontend/dist/
+bun.lock
