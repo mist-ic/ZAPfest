@@ -17,6 +17,7 @@ public class EventPublisher {
         this.kafkaTemplate = kafkaTemplate;
     }
 
+    @org.springframework.scheduling.annotation.Async
     public void publishOrderEvent(OrderEvent event) {
         try {
             kafkaTemplate.send("orders", event.getOrderId(), event);
@@ -26,6 +27,7 @@ public class EventPublisher {
         }
     }
 
+    @org.springframework.scheduling.annotation.Async
     public void publishPaymentEvent(PaymentEvent event) {
         try {
             kafkaTemplate.send("payments", event.getOrderId(), event);
@@ -35,6 +37,7 @@ public class EventPublisher {
         }
     }
 
+    @org.springframework.scheduling.annotation.Async
     public void publishNotification(NotificationEvent event) {
         try {
             kafkaTemplate.send("notifications", event.getUserId(), event);
