@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.0+-6DB33F?style=for-the-badge&logo=spring&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.0.2-6DB33F?style=for-the-badge&logo=spring&logoColor=white)](https://spring.io/projects/spring-boot)
 [![React](https://img.shields.io/badge/React-18.0+-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-7.0+-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
@@ -41,17 +41,17 @@ This project follows a strict **Layered Architecture** to ensure separation of c
 
 ```mermaid
 graph TD
-    User[Client (Web/Mobile)] -->|HTTPS| Netlify[Frontend (React)]
-    Netlify -->|REST API| Railway[Backend (Spring Boot)]
+    User["Client (Web/Mobile)"] -->|HTTPS| Netlify["Frontend (React)"]
+    Netlify -->|REST API| Railway["Backend (Spring Boot)"]
     
     subgraph "Backend Ecosystem"
         Railway -->|Auth/Logic| Controller
         Controller -->|DTO| Service
         Service -->|Data| Repository
-        Repository -->|Query| DB[(MongoDB)]
+        Repository -->|Query| DB[("MongoDB")]
         
-        Service -->|Events| Kafka{Apache Kafka}
-        Service -->|Payment| Razorpay[Payment Gateway]
+        Service -->|Events| Kafka{"Apache Kafka"}
+        Service -->|Payment| Razorpay["Payment Gateway"]
     end
 ```
 
@@ -61,7 +61,7 @@ graph TD
 
 | Category | Technology | Usage |
 | :--- | :--- | :--- |
-| **Backend** | `Spring Boot 3.x` | Core application framework |
+| **Backend** | `Spring Boot 4.0.2` | Core application framework |
 | **Language** | `Java 21` | Modern Java features |
 | **Database** | `MongoDB` | NoSQL data store for flexible schema |
 | **Frontend** | `React + Vite` | Single Page Application (SPA) |
