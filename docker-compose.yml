@@ -4,7 +4,8 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_MONGODB_URI: mongodb://mongo:27017/zapfest
+      SPRING_PROFILES_ACTIVE: docker
+      MONGO_URL: mongodb://mongo:27017/zapfest
       SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:9092
       JWT_SECRET: myverysecurejwtsecretkeythatisatleast256bitslong123456
     depends_on:
