@@ -1,8 +1,8 @@
 [build]
   # Directory to change to before starting the build
   base = "frontend"
-  # Command to build your site
-  command = "npm install && npm run build"
+  # Command to build your site - Force fresh lockfile to fix missing Linux binaries
+  command = "rm -f package-lock.json && npm install && npm run build"
   # Directory that contains the build output (relative to base)
   publish = "dist"
 
