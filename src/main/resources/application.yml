@@ -1,12 +1,12 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 spring:
   application:
     name: zapfest-backend
   
   mongodb:
-    uri: mongodb://localhost:27017/zapfest
+    uri: ${MONGO_URL:mongodb://localhost:27017/zapfest}
   
   kafka:
     bootstrap-servers: localhost:9092

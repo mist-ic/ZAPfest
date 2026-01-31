@@ -45,6 +45,16 @@ docker-compose up --build
 mvn spring-boot:run
 ```
 
+### Deploy to Railway
+
+1. Push code to GitHub
+2. Create new project in Railway from GitHub repo
+3. Add MongoDB plugin (Railway → Add Plugin → MongoDB)
+4. Set environment variables in Railway dashboard:
+   - `JWT_SECRET` - your secure JWT key (min 256 bits)
+   - `MONGO_URL` - auto-set by Railway MongoDB plugin
+5. Deploy! Railway auto-detects Java and builds with Maven
+
 ## API Documentation
 
 - Swagger UI: http://localhost:8080/swagger-ui.html
@@ -54,7 +64,8 @@ mvn spring-boot:run
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| MONGODB_URI | mongodb://localhost:27017/zapfest | MongoDB connection |
+| PORT | 8080 | Server port (Railway sets this) |
+| MONGO_URL | mongodb://localhost:27017/zapfest | MongoDB connection |
 | JWT_SECRET | (dev secret) | JWT signing key |
 | MAIL_HOST | smtp.gmail.com | SMTP host |
 | MAIL_USERNAME | - | SMTP username |
