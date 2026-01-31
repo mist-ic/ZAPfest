@@ -1,131 +1,132 @@
-# ZAPfest Backend
+# 🚀 ZAPfest - Food Delivery Backend (Spring Boot + MongoDB)
 
-A production-grade food delivery system backend built with Spring Boot 4 and MongoDB.
+> **Live Demo:** [https://zapfest-production.up.railway.app/swagger-ui.html](https://zapfest-production.up.railway.app/swagger-ui.html)  
+> **Backend Status:** ✅ Production Ready  
+> **Deployment:** Railway (Dockerized)
 
-## Tech Stack (Latest as of Jan 2026)
+A production-grade, event-driven food delivery backend system built to meet comprehensive enterprise requirements.
 
-| Component | Version |
-|-----------|---------|
-| Java | 21 |
-| Spring Boot | 4.0.2 |
-| MongoDB | 7.x |
-| JJWT | 0.13.0 |
-| springdoc-openapi | 3.0.1 |
-| Bucket4j | 8.16.0 |
-| Razorpay | 1.4.8 |
+---
 
-## Features
+## 🏗️ Architecture & Tech Stack
 
-- JWT Authentication with role-based access (Admin, Restaurant Owner, Customer, Delivery Partner)
-- Restaurant management with search, filter, and image upload
-- Menu management with availability toggle
-- Order lifecycle with status tracking
-- Razorpay payment integration (mock mode available)
-- Email notifications for order updates
-- Reviews and ratings with aggregation
-- Analytics dashboard for admins
-- Rate limiting and caching
-- Swagger/OpenAPI documentation
-- Docker ready
+This project follows a **Layered Architecture** with strict separation of concerns.
 
-## Quick Start
-
-### With Docker
-
-```bash
-docker-compose up --build
+```mermaid
+graph TD
+    Client[React Frontend / Mobile] -->|REST API| Controller
+    Controller -->|DTO| Service
+    Service -->|Entities| Repository
+    Repository -->|Query| MongoDB[(MongoDB)]
+    
+    subgraph "External Integrations"
+        Service -->|Events| Kafka{Kafka Broker}
+        Service -->|Payment| Razorpay[Razorpay Gateway]
+        Service -->|SMTP| Email[Email Service]
+    end
 ```
 
-### Without Docker
+| Component | Technology | Version | Usage |
+|-----------|------------|---------|-------|
+| **Framework** | Spring Boot | 4.0.2 | Core backend framework |
+| **Language** | Java | 21 | Modern Java features |
+| **Database** | MongoDB | 7.x | High-performance NoSQL store |
+| **Security** | Spring Security + JJWT | 0.13.0 | RBAC & Stateless Auth |
+| **Documentation** | SpringDoc OpenAPI | 3.0.1 | Auto-generated Swagger UI |
+| **Rate Limiting** | Bucket4j | 8.16.0 | API protection |
+| **Caching** | Caffeine | 3.x | High-performance local cache |
+| **Events** | Apache Kafka | 3.6 | Event-driven updates |
+| **Cloud** | Railway | - | CI/CD & Hosting |
 
-1. Ensure Java 21+ is installed
-2. Start MongoDB on `localhost:27017`
-3. Run:
+---
+
+## ✨ Features Implemented (vs Requirements)
+
+| Feature Category | Status | Details |
+|------------------|:------:|---------|
+| **User Mgmt** | ✅ | Register, Login, JWT, RBAC (Admin/Owner/Customer/Delivery) |
+| **Core Domain** | ✅ | CRUD for Restaurants, Menu Items, Orders, Addresses |
+| **Search/Filter** | ✅ | MongoTemplate complex queries for cuisines/names |
+| **Security** | ✅ | BCrypt, Stateless JWT, Role guards (`@PreAuthorize`) |
+| **Payments** | ✅ | Razorpay integration (Mock/Test mode enabled) |
+| **Analytics** | ✅ | Admin dashboard stats (Revenue, Orders, Top Restaurants) |
+| **Notifications** | ✅ | Email service + Kafka event publishing |
+| **Reliability** | ✅ | Global Exception Handling, Input Validation, Rate Limiting |
+| **DevOps** | ✅ | Docker Compose, Railway config, Environment variables |
+
+---
+
+## 🚀 Quick Start
+
+### 1. Cloud Deployment (Railway)
+The easiest way to run the backend.
+
+1. **Fork/Push** this repo to GitHub.
+2. Create a project in **Railway**.
+3. Add **MongoDB** service.
+4. Set Environment Variables:
+   - `MONGO_URL`: `${{MongoDB.MONGO_URL}}/zapfest?authSource=admin`
+   - `JWT_SECRET`: (Any secure 32+ char string)
+5. **Deploy!**
+
+### 2. Local Docker (Recommended)
+```bash
+# Starts App, MongoDB, Kafka, Zookeeper
+docker-compose up --build
+```
+Access at `http://localhost:8080/swagger-ui.html`
+
+### 3. Manual Run
+Requires Java 21+ and local MongoDB running on port 27017.
 ```bash
 mvn spring-boot:run
 ```
 
-### Deploy to Railway
+---
 
-1. Push code to GitHub
-2. Create new project in Railway from GitHub repo
-3. Add MongoDB: Click **+ New** → **Database** → **MongoDB**
-4. Set environment variables in your app service:
-   - `MONGO_URL` = `${{MongoDB.MONGO_URL}}`
-   - `JWT_SECRET` = your secure JWT key (min 256 bits)
-5. Enable **Public Networking** → Generate Domain
-6. Deploy! Railway auto-detects Java and builds with Maven
+## 🧪 Test Credentials (Seeded Data)
 
-## API Documentation
+The database is pre-seeded with these accounts:
 
-- Swagger UI: http://localhost:8080/swagger-ui.html
-- OpenAPI JSON: http://localhost:8080/api-docs
+| Role | Email | Password |
+|------|-------|----------|
+| **Admin** | `admin@zapfest.com` | `admin123` |
+| **Customer** | `customer@test.com` | `password123` |
+| **Owner** | `owner1@test.com` | `password123` |
+| **Delivery**| `delivery@test.com` | `password123` |
 
-## Environment Variables
+---
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| PORT | 8080 | Server port (Railway sets this) |
-| MONGO_URL | mongodb://localhost:27017/zapfest | MongoDB connection |
-| JWT_SECRET | (dev secret) | JWT signing key |
-| MAIL_HOST | smtp.gmail.com | SMTP host |
-| MAIL_USERNAME | - | SMTP username |
-| MAIL_PASSWORD | - | SMTP password |
-| RAZORPAY_KEY_ID | rzp_test_dummy | Razorpay key |
-| RAZORPAY_KEY_SECRET | dummy_secret | Razorpay secret |
+## 📂 Project Structure
 
-## API Endpoints (35 total)
+```text
+src/main/java/com/fooddelivery
+├── config/          # Security, Swagger, Cache configs
+├── controller/      # REST API endpoints (Web Layer)
+├── dto/             # Data Transfer Objects (Request/Response)
+├── exception/       # Global Exception Handling
+├── model/           # MongoDB Entities
+├── repository/      # Spring Data Repositories
+├── security/        # JWT Filter, UserDetails service
+├── service/         # Business Logic
+└── util/            # Helper classes
+```
 
-### Auth
-- `POST /api/auth/register` - Register
-- `POST /api/auth/login` - Login
-- `POST /api/auth/refresh` - Refresh token
+---
 
-### Users
-- `GET /api/users/me` - Get profile
-- `PUT /api/users/me` - Update profile
-- `POST /api/users/me/avatar` - Upload avatar
-- `GET /api/users` - List all (Admin)
-- `PATCH /api/users/{id}/role` - Update role (Admin)
+## 📝 API Overview
 
-### Restaurants
-- `GET /api/restaurants` - List (public)
-- `GET /api/restaurants/search?q=` - Search
-- `GET /api/restaurants/filter?cuisines=` - Filter
-- `GET /api/restaurants/{id}` - Get by ID
-- `POST /api/restaurants` - Create (Owner/Admin)
-- `PUT /api/restaurants/{id}` - Update
-- `POST /api/restaurants/{id}/image` - Upload image
+Full documentation available in Swagger UI. Key endpoints:
 
-### Menu
-- `GET /api/restaurants/{id}/menu` - Get menu
-- `POST /api/restaurants/{id}/menu` - Add item
-- `PUT /api/restaurants/{id}/menu/{itemId}` - Update item
-- `PATCH /api/restaurants/{id}/menu/{itemId}/availability` - Toggle
+- **Auth**: `/api/auth/login`, `/api/auth/register`
+- **Restaurants**: `/api/restaurants` (Public), `/api/restaurants/{id}/menu`
+- **Orders**: `/api/orders` (Create, Track, Cancel)
+- **Admin**: `/api/analytics/dashboard` (Protected)
 
-### Orders
-- `POST /api/orders` - Create order
-- `GET /api/orders` - My orders
-- `GET /api/orders/{id}` - Get order
-- `PATCH /api/orders/{id}/status` - Update status
-- `POST /api/orders/{id}/cancel` - Cancel
+---
 
-### Payments
-- `POST /api/payments/create/{orderId}` - Create payment
-- `POST /api/payments/webhook` - Razorpay webhook
-- `POST /api/payments/verify` - Verify signature
-
-### Reviews
-- `POST /api/reviews` - Add review
-- `GET /api/reviews/restaurant/{id}` - Get reviews
-- `DELETE /api/reviews/{id}` - Delete review
-
-### Analytics (Admin)
-- `GET /api/analytics/dashboard` - Dashboard
-- `GET /api/analytics/revenue` - Revenue stats
-- `GET /api/analytics/restaurant/{id}` - Restaurant stats
-
-## Files
-
-- `VIDEO_GUIDE.md` - Step-by-step demo recording instructions
-- `ZAPfest-API.postman_collection.json` - Postman collection
+## ✅ Bonus Achievements
+- **Event-Driven**: Kafka integration for order events.
+- **Dockerized**: Full `docker-compose` setup included.
+- **CI/CD**: Ready for Railway/Render automatic deployments.
+- **Data Seeder**: Auto-populates mock data on startup.
