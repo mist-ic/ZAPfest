@@ -1,5 +1,5 @@
 spring:
   mongodb:
-    uri: mongodb://mongo:27017/zapfest
+    uri: ${MONGO_URL:mongodb://mongo:27017/zapfest}
   kafka:
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}

@@ -49,11 +49,12 @@ mvn spring-boot:run
 
 1. Push code to GitHub
 2. Create new project in Railway from GitHub repo
-3. Add MongoDB plugin (Railway → Add Plugin → MongoDB)
-4. Set environment variables in Railway dashboard:
-   - `JWT_SECRET` - your secure JWT key (min 256 bits)
-   - `MONGO_URL` - auto-set by Railway MongoDB plugin
-5. Deploy! Railway auto-detects Java and builds with Maven
+3. Add MongoDB: Click **+ New** → **Database** → **MongoDB**
+4. Set environment variables in your app service:
+   - `MONGO_URL` = `${{MongoDB.MONGO_URL}}`
+   - `JWT_SECRET` = your secure JWT key (min 256 bits)
+5. Enable **Public Networking** → Generate Domain
+6. Deploy! Railway auto-detects Java and builds with Maven
 
 ## API Documentation
 
