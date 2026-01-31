@@ -1,0 +1,20 @@
+[build]
+  # Directory to change to before starting the build
+  base = "frontend"
+  # Command to build your site
+  command = "npm install && npm run build"
+  # Directory that contains the build output (relative to base)
+  publish = "dist"
+
+# Proxy API requests to the live Railway backend
+[[redirects]]
+  from = "/api/*"
+  to = "https://zapfest-production.up.railway.app/api/:splat"
+  status = 200
+  force = true
+
+# SPA Fallback: Redirect all other traffic to index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

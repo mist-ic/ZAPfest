@@ -14,18 +14,27 @@ api.interceptors.request.use(config => {
 api.interceptors.response.use(
     res => res,
     async err => {
-        if (err.response?.status === 401 && localStorage.getItem('refreshToken')) {
+        const originalRequest = err.config
+        if ((err.response?.status === 401 || err.response?.status === 403) && localStorage.getItem('refreshToken') && !originalRequest._retry) {
+            originalRequest._retry = true
             try {
                 const { data } = await axios.post('/api/auth/refresh', null, {
                     headers: { 'X-Refresh-Token': localStorage.getItem('refreshToken') }
                 })
                 localStorage.setItem('accessToken', data.data.accessToken)
                 localStorage.setItem('refreshToken', data.data.refreshToken)
-                err.config.headers.Authorization = `Bearer ${data.data.accessToken}`
-                return axios(err.config)
-            } catch {
+
+                // Update header for both storage and the retry request
+                api.defaults.headers.common['Authorization'] = `Bearer ${data.data.accessToken}`
+                originalRequest.headers.Authorization = `Bearer ${data.data.accessToken}`
+
+                return api(originalRequest)
+            } catch (refreshError) {
+                // Only clear and redirect if refresh actually failed
+                console.error("Token refresh failed:", refreshError)
                 localStorage.clear()
                 window.location.href = '/login'
+                return Promise.reject(refreshError)
             }
         }
         return Promise.reject(err)
