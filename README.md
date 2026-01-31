@@ -1,132 +1,156 @@
-# 🚀 ZAPfest - Food Delivery Backend (Spring Boot + MongoDB)
+# ⚡ ZAPfest - Modern Food Delivery System
 
-> **Live Demo:** [https://zapfest-production.up.railway.app/swagger-ui.html](https://zapfest-production.up.railway.app/swagger-ui.html)  
-> **Backend Status:** ✅ Production Ready  
-> **Deployment:** Railway (Dockerized)
+<div align="center">
 
-A production-grade, event-driven food delivery backend system built to meet comprehensive enterprise requirements.
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.0+-6DB33F?style=for-the-badge&logo=spring&logoColor=white)](https://spring.io/projects/spring-boot)
+[![React](https://img.shields.io/badge/React-18.0+-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-7.0+-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Railway](https://img.shields.io/badge/Deployed_on-Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)](https://railway.app/)
+[![Netlify](https://img.shields.io/badge/Frontend_on-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://netlify.com/)
+
+<br />
+
+> **A production-grade, event-driven food delivery platform built with Spring Boot and React.**
+
+<br />
+
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Frontend-zapfest.netlify.app-FF5722?style=for-the-badge)](https://zapfest.netlify.app)
+[![API Docs](https://img.shields.io/badge/📄_API_Documentation-Swagger_UI-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://zapfest-production.up.railway.app/swagger-ui.html)
+
+</div>
 
 ---
 
-## 🏗️ Architecture & Tech Stack
+## 📋 Project Overview
 
-This project follows a **Layered Architecture** with strict separation of concerns.
+**ZAPfest** is a robust backend system designed to simulate real-world industry requirements for a food delivery product. It features a layered architecture, secure JWT authentication, complex database querying, and external integrations.
+
+### 🌟 Key Highlights
+-   **Security First**: Role-Based Access Control (RBAC) with stateless JWT authentication.
+-   **Performance**: Redis-ready caching architecture (Caffeine implemented) and API rate limiting.
+-   **Scalability**: Dockerized and ready for cloud deployment (Live on Railway).
+-   **Event-Driven**: Apache Kafka integration for real-time order processing events.
+-   **Modern UI**: Sleek frontend built with React, Tailwind v4, and shadcn/ui.
+
+---
+
+## 🏗️ Architecture
+
+This project follows a strict **Layered Architecture** to ensure separation of concerns and maintainability.
 
 ```mermaid
 graph TD
-    Client[React Frontend / Mobile] -->|REST API| Controller
-    Controller -->|DTO| Service
-    Service -->|Entities| Repository
-    Repository -->|Query| MongoDB[(MongoDB)]
+    User[Client (Web/Mobile)] -->|HTTPS| Netlify[Frontend (React)]
+    Netlify -->|REST API| Railway[Backend (Spring Boot)]
     
-    subgraph "External Integrations"
-        Service -->|Events| Kafka{Kafka Broker}
-        Service -->|Payment| Razorpay[Razorpay Gateway]
-        Service -->|SMTP| Email[Email Service]
+    subgraph "Backend Ecosystem"
+        Railway -->|Auth/Logic| Controller
+        Controller -->|DTO| Service
+        Service -->|Data| Repository
+        Repository -->|Query| DB[(MongoDB)]
+        
+        Service -->|Events| Kafka{Apache Kafka}
+        Service -->|Payment| Razorpay[Payment Gateway]
     end
 ```
 
-| Component | Technology | Version | Usage |
-|-----------|------------|---------|-------|
-| **Framework** | Spring Boot | 4.0.2 | Core backend framework |
-| **Language** | Java | 21 | Modern Java features |
-| **Database** | MongoDB | 7.x | High-performance NoSQL store |
-| **Security** | Spring Security + JJWT | 0.13.0 | RBAC & Stateless Auth |
-| **Documentation** | SpringDoc OpenAPI | 3.0.1 | Auto-generated Swagger UI |
-| **Rate Limiting** | Bucket4j | 8.16.0 | API protection |
-| **Caching** | Caffeine | 3.x | High-performance local cache |
-| **Events** | Apache Kafka | 3.6 | Event-driven updates |
-| **Cloud** | Railway | - | CI/CD & Hosting |
+---
+
+## 🛠️ Technology Stack
+
+| Category | Technology | Usage |
+| :--- | :--- | :--- |
+| **Backend** | `Spring Boot 3.x` | Core application framework |
+| **Language** | `Java 21` | Modern Java features |
+| **Database** | `MongoDB` | NoSQL data store for flexible schema |
+| **Frontend** | `React + Vite` | Single Page Application (SPA) |
+| **Styling** | `Tailwind CSS v4` | Utility-first styling |
+| **UI Lib** | `shadcn/ui` | Accessible component library |
+| **Security** | `Spring Security + JWT` | Authentication & Authorization |
+| **Docs** | `SpringDoc OpenAPI` | Automated Swagger Documentation |
+| **DevOps** | `Docker + Railway` | Containerization & Cloud Hosting |
 
 ---
 
-## ✨ Features Implemented (vs Requirements)
+## ✅ Features Implementation Status
 
-| Feature Category | Status | Details |
-|------------------|:------:|---------|
-| **User Mgmt** | ✅ | Register, Login, JWT, RBAC (Admin/Owner/Customer/Delivery) |
-| **Core Domain** | ✅ | CRUD for Restaurants, Menu Items, Orders, Addresses |
-| **Search/Filter** | ✅ | MongoTemplate complex queries for cuisines/names |
-| **Security** | ✅ | BCrypt, Stateless JWT, Role guards (`@PreAuthorize`) |
-| **Payments** | ✅ | Razorpay integration (Mock/Test mode enabled) |
-| **Analytics** | ✅ | Admin dashboard stats (Revenue, Orders, Top Restaurants) |
-| **Notifications** | ✅ | Email service + Kafka event publishing |
-| **Reliability** | ✅ | Global Exception Handling, Input Validation, Rate Limiting |
-| **DevOps** | ✅ | Docker Compose, Railway config, Environment variables |
+Aligned with the **Product Requirements Document (PRD)**.
+
+| Feature Module | Requirement | Status | Implementation Details |
+| :--- | :--- | :---: | :--- |
+| **User Management** | Register, Login, RBAC, JWT | ✅ | `BCrypt` hashing, `JJCWT` Library, Custom Security Filter |
+| **Core Domain** | CRUD (Restaurants, Menu, Orders) | ✅ | Full REST API with Pagination & Sorting |
+| **Advanced Query** | Complex Filtering, Search | ✅ | `MongoTemplate` regex search for Cuisines & Names |
+| **Security** | Rate Limiting, Input Validation | ✅ | `Bucket4j` for API throttling, `Jakarta Validation` |
+| **Integrations** | Payment / Email | ✅ | **Razorpay** Mock Integration + **JavaMailSender** |
+| **Analytics** | Dashboard APIs | ✅ | Aggregation pipelines for Revenue & Order stats |
+| **Bonus** | Frontend UI | ⭐ | Premium React Dashboard with Dark/Light modes |
+| **Bonus** | Cloud Deployment | ⭐ | **Railway** (Backend) + **Netlify** (Frontend) |
+| **Bonus** | Event-Driven | ⭐ | **Kafka** Producer/Consumer for Order updates |
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Getting Started
 
-### 1. Cloud Deployment (Railway)
-The easiest way to run the backend.
+### ☁️ Cloud Access (Recommended)
+Simply visit the live links above to test the application without any installation.
+-   **Admin Creds**: `admin@zapfest.com` / `admin123`
+-   **User Creds**: `customer@test.com` / `password123`
 
-1. **Fork/Push** this repo to GitHub.
-2. Create a project in **Railway**.
-3. Add **MongoDB** service.
-4. Set Environment Variables:
-   - `MONGO_URL`: `${{MongoDB.MONGO_URL}}/zapfest?authSource=admin`
-   - `JWT_SECRET`: (Any secure 32+ char string)
-5. **Deploy!**
+### 💻 Local Development
 
-### 2. Local Docker (Recommended)
+**Prerequisites:**
+-   Java 21+
+-   Node.js 18+
+-   Docker (optional, for DB/Kafka)
+
+#### 1. Backend Setup
 ```bash
-# Starts App, MongoDB, Kafka, Zookeeper
-docker-compose up --build
-```
-Access at `http://localhost:8080/swagger-ui.html`
+# Clone the repo
+git clone https://github.com/mist-ic/ZAPfest.git
 
-### 3. Manual Run
-Requires Java 21+ and local MongoDB running on port 27017.
-```bash
+# Start MongoDB & Kafka (using Docker)
+docker-compose up -d
+
+# Run the Application
 mvn spring-boot:run
 ```
 
----
+#### 2. Frontend Setup
+```bash
+cd frontend
+npm install
 
-## 🧪 Test Credentials (Seeded Data)
-
-The database is pre-seeded with these accounts:
-
-| Role | Email | Password |
-|------|-------|----------|
-| **Admin** | `admin@zapfest.com` | `admin123` |
-| **Customer** | `customer@test.com` | `password123` |
-| **Owner** | `owner1@test.com` | `password123` |
-| **Delivery**| `delivery@test.com` | `password123` |
+# Start Dev Server
+npm run dev
+```
 
 ---
 
 ## 📂 Project Structure
 
 ```text
-src/main/java/com/fooddelivery
-├── config/          # Security, Swagger, Cache configs
-├── controller/      # REST API endpoints (Web Layer)
-├── dto/             # Data Transfer Objects (Request/Response)
-├── exception/       # Global Exception Handling
-├── model/           # MongoDB Entities
-├── repository/      # Spring Data Repositories
-├── security/        # JWT Filter, UserDetails service
-├── service/         # Business Logic
-└── util/            # Helper classes
+ZAPfest/
+├── src/main/java/com/fooddelivery    # Backend Source
+│   ├── controller/      # REST Endpoints
+│   ├── service/         # Business Logic
+│   ├── repository/      # DB Access
+│   ├── model/           # MongoDB Entities
+│   ├── security/        # JWT Auth Config
+│   └── exception/       # Global Error Handling
+├── frontend/            # React Frontend
+│   ├── src/
+│   │   ├── components/  # Reusable UI (Button, Card, Input)
+│   │   ├── pages/       # Route Views (Home, Cart, Orders)
+│   │   └── lib/         # Utilities
+│   └── netlify.toml     # Deployment Config
+├── docker-compose.yaml  # Infrastructure (Mongo, Kafka, Zookeeper)
+└── README.md            # Project Documentation
 ```
 
 ---
 
-## 📝 API Overview
-
-Full documentation available in Swagger UI. Key endpoints:
-
-- **Auth**: `/api/auth/login`, `/api/auth/register`
-- **Restaurants**: `/api/restaurants` (Public), `/api/restaurants/{id}/menu`
-- **Orders**: `/api/orders` (Create, Track, Cancel)
-- **Admin**: `/api/analytics/dashboard` (Protected)
-
----
-
-## ✅ Bonus Achievements
-- **Event-Driven**: Kafka integration for order events.
-- **Dockerized**: Full `docker-compose` setup included.
-- **CI/CD**: Ready for Railway/Render automatic deployments.
-- **Data Seeder**: Auto-populates mock data on startup.
+<div align="center">
+  <sub>Built with ❤️ by mist-ic for the Final Term Project</sub>
+</div>
