@@ -17,6 +17,7 @@
 
 [![Live Demo](https://img.shields.io/badge/🚀_Live_Frontend-zapfest.netlify.app-FF5722?style=for-the-badge)](https://zapfest.netlify.app)
 [![API Docs](https://img.shields.io/badge/📄_API_Documentation-Swagger_UI-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://zapfest-production.up.railway.app/swagger-ui.html)
+[![Demo Video](https://img.shields.io/badge/🎥_Watch_Demo-Google_Drive-4285F4?style=for-the-badge&logo=google-drive&logoColor=white)](https://drive.google.com/file/d/1eFjBAZDbm-Y1ZyY8Z__rcj0GPu-NI7cH/view?usp=sharing)
 
 </div>
 
