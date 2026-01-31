@@ -7,6 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 import { Minus, Plus, Trash2, ShoppingCart, ArrowRight, Loader2, MapPin } from "lucide-react"
+import { toast } from "sonner"
 
 export default function Cart() {
     const cart = useCart()
@@ -29,7 +30,10 @@ export default function Cart() {
             cart.clear()
             nav('/orders')
         } catch (err) {
-            setError(err.response?.data?.message || 'Order failed')
+            console.error("Order error:", err)
+            const msg = err.response?.data?.message || err.message || 'Order failed'
+            setError(msg)
+            toast.error(`Order Failed: ${msg}`)
         }
         setLoading(false)
     }
